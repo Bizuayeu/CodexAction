@@ -1,0 +1,565 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-05-03T03:46:35.405512+00:00",
+  "run_dir": "C:\\Users\\anyth\\DEV\\sandbox\\Codex\\pet-runs\\weave",
+  "primary_generation_skill": "$imagegen",
+  "jobs": [
+    {
+      "id": "base",
+      "kind": "base-pet",
+      "status": "complete",
+      "prompt_file": "prompts/base-pet.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        }
+      ],
+      "output_path": "decoded/base.png",
+      "depends_on": [],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6c599195481918800d0940366c032.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "6fb4d1777d9bf30a3bb9426423b36c9200d36a49f7f1d08838fe638777621357",
+      "output_sha256": "6fb4d1777d9bf30a3bb9426423b36c9200d36a49f7f1d08838fe638777621357",
+      "completed_at": "2026-05-03T03:50:31.805587+00:00",
+      "metadata": {
+        "width": 1205,
+        "height": 1305,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "canonical_reference_path": "references\\canonical-base.png"
+    },
+    {
+      "id": "idle",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/idle.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/idle.png",
+          "role": "layout guide for 6 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        }
+      ],
+      "output_path": "decoded/idle.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base"
+      ],
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6c63562b48191bb268666b9663525.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "a3a4b24d16c4cdd967f28455507a0f46370135965418c9c98225b96866f9fdde",
+      "output_sha256": "a3a4b24d16c4cdd967f28455507a0f46370135965418c9c98225b96866f9fdde",
+      "completed_at": "2026-05-03T03:53:23.765844+00:00",
+      "metadata": {
+        "width": 1717,
+        "height": 916,
+        "mode": "RGB",
+        "format": "PNG"
+      }
+    },
+    {
+      "id": "running-right",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/running-right.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/running-right.png",
+          "role": "layout guide for 8 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        }
+      ],
+      "output_path": "decoded/running-right.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base"
+      ],
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6c6cc60c88191b3131261b65d23ed.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "42369ac7efedfbb95a48b0e72d07c39c8abf8102ddfd5a37d649aa280928908b",
+      "output_sha256": "42369ac7efedfbb95a48b0e72d07c39c8abf8102ddfd5a37d649aa280928908b",
+      "completed_at": "2026-05-03T03:55:37.080351+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "format": "PNG"
+      }
+    },
+    {
+      "id": "running-left",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/running-left.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/running-left.png",
+          "role": "layout guide for 8 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        },
+        {
+          "path": "decoded/running-right.png",
+          "role": "rightward gait reference for leftward row decision"
+        }
+      ],
+      "output_path": "decoded/running-left.png",
+      "depends_on": [
+        "base",
+        "running-right"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base",
+        "running-right"
+      ],
+      "mirror_policy": {
+        "may_derive_from": "running-right",
+        "derivation": "horizontal-mirror",
+        "requires_explicit_approval": true,
+        "fallback_generation_skill": "$imagegen"
+      },
+      "recording_owner": "parent",
+      "source_path": "decoded\\running-right.png",
+      "source_provenance": "deterministic-mirror",
+      "derived_from": "running-right",
+      "source_sha256": "42369ac7efedfbb95a48b0e72d07c39c8abf8102ddfd5a37d649aa280928908b",
+      "output_sha256": "c13892027a3a0e80e19a9ebf36490b65544c52111c14ea7780783e49be3a5ebb",
+      "completed_at": "2026-05-03T03:56:18.656538+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGBA",
+        "format": "PNG"
+      },
+      "mirror_decision": {
+        "approved": true,
+        "approved_at": "2026-05-03T03:56:18.656538+00:00",
+        "note": "Weave has no readable text, logos, handed prop, or side-specific symbol in the generated running-right strip; mirroring preserves the orange hair, robe silhouette, palette, and movement semantics."
+      }
+    },
+    {
+      "id": "waving",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/waving.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/waving.png",
+          "role": "layout guide for 4 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        }
+      ],
+      "output_path": "decoded/waving.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base"
+      ],
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6c789981c8191a16bbaae979ef314.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "5f0b92c5fd15db93a6fc6b8fcc4076d9433bf8ecf37c6a8c4d5702abc57b62ff",
+      "output_sha256": "5f0b92c5fd15db93a6fc6b8fcc4076d9433bf8ecf37c6a8c4d5702abc57b62ff",
+      "completed_at": "2026-05-03T03:59:05.628002+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "format": "PNG"
+      }
+    },
+    {
+      "id": "jumping",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/jumping.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/jumping.png",
+          "role": "layout guide for 5 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        }
+      ],
+      "output_path": "decoded/jumping.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base"
+      ],
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6c835ead48191b611eb05547e75f3.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "86018e629c1434619d3eff73cbddfd411b329ff07706a22266c277859c7566ed",
+      "output_sha256": "86018e629c1434619d3eff73cbddfd411b329ff07706a22266c277859c7566ed",
+      "completed_at": "2026-05-03T04:01:48.781965+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "format": "PNG"
+      }
+    },
+    {
+      "id": "failed",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/failed.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/failed.png",
+          "role": "layout guide for 8 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        }
+      ],
+      "output_path": "decoded/failed.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base"
+      ],
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6c8d5c79c8191a8e6815c880c722a.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "2d261e9fe4bdeb5c49ab4ef08968bc9dcd17626497adc9321e2b2bb5d540e660",
+      "output_sha256": "2d261e9fe4bdeb5c49ab4ef08968bc9dcd17626497adc9321e2b2bb5d540e660",
+      "completed_at": "2026-05-03T04:04:44.970954+00:00",
+      "metadata": {
+        "width": 2079,
+        "height": 756,
+        "mode": "RGB",
+        "format": "PNG"
+      }
+    },
+    {
+      "id": "waiting",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/waiting.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/waiting.png",
+          "role": "layout guide for 6 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        }
+      ],
+      "output_path": "decoded/waiting.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base"
+      ],
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6c981b7a48191a1eea5e85aa6d3c8.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "0bd4f7324d6f81437b115d6c662377f6c5eb019017efc4471380dd1afcfaa9ee",
+      "output_sha256": "0bd4f7324d6f81437b115d6c662377f6c5eb019017efc4471380dd1afcfaa9ee",
+      "completed_at": "2026-05-03T04:13:05.410655+00:00",
+      "metadata": {
+        "width": 1905,
+        "height": 826,
+        "mode": "RGB",
+        "format": "PNG"
+      }
+    },
+    {
+      "id": "running",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/running.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/running.png",
+          "role": "layout guide for 6 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        }
+      ],
+      "output_path": "decoded/running.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base"
+      ],
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6cb8290308191aa5e165509b3318b.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "2008954d5603f440e313f526ffc0cb1244ab54ec09e00376e6f3f0fc30245d1e",
+      "output_sha256": "2008954d5603f440e313f526ffc0cb1244ab54ec09e00376e6f3f0fc30245d1e",
+      "completed_at": "2026-05-03T04:16:41.688207+00:00",
+      "metadata": {
+        "width": 1774,
+        "height": 887,
+        "mode": "RGB",
+        "format": "PNG"
+      }
+    },
+    {
+      "id": "review",
+      "kind": "row-strip",
+      "status": "complete",
+      "prompt_file": "prompts/rows/review.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references\\reference-02.png",
+          "role": "pet reference"
+        },
+        {
+          "path": "references/layout-guides/review.png",
+          "role": "layout guide for 6 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base pet"
+        }
+      ],
+      "output_path": "decoded/review.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "parallelizable_after": [
+        "base"
+      ],
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "C:\\Users\\anyth\\.codex\\generated_images\\019debec-10cf-7cd3-a95d-4633c282185b\\ig_011c8d4ff91503530169f6cc7a99d0819196d8e4e91d16bf99.png",
+      "source_provenance": "built-in-imagegen",
+      "source_sha256": "396d0f6dbc5f2ba13a931eb87f8973ceada053c09ba20bb2b3dc25ae661498ea",
+      "output_sha256": "396d0f6dbc5f2ba13a931eb87f8973ceada053c09ba20bb2b3dc25ae661498ea",
+      "completed_at": "2026-05-03T04:20:49.795212+00:00",
+      "metadata": {
+        "width": 1942,
+        "height": 809,
+        "mode": "RGB",
+        "format": "PNG"
+      }
+    }
+  ],
+  "canonical_identity_reference": {
+    "path": "references\\canonical-base.png",
+    "source_job": "base",
+    "sha256": "6fb4d1777d9bf30a3bb9426423b36c9200d36a49f7f1d08838fe638777621357",
+    "metadata": {
+      "width": 1205,
+      "height": 1305,
+      "mode": "RGB",
+      "format": "PNG"
+    }
+  }
+}
