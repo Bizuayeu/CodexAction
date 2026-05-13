@@ -4,6 +4,7 @@
 # Windows Git Bash shell_path setting. These variables address a known
 # Windows PowerShell 8009001d startup failure mode where SystemRoot is
 # missing from the spawned shell environment.
+sandbox_mode = "workspace-write"
 [shell_environment_policy]
 inherit = "all"
 
@@ -11,3 +12,6 @@ inherit = "all"
 SystemRoot = "C:\\Windows"
 WINDIR = "C:\\Windows"
 ComSpec = "C:\\Windows\\System32\\cmd.exe"
+
+[sandbox_workspace_write]
+network_access = true
