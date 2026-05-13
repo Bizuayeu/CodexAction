@@ -6,6 +6,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+from google.auth.transport.requests import AuthorizedSession
+
 from adapters.mail.mime_builder import build_mime
 from domain.exceptions import AuthError, MailSendError
 from infrastructure.google_oauth_provider import load_credentials
@@ -14,15 +16,64 @@ RETRYABLE_STATUS = {429, 500, 502, 503, 504}
 AUTH_FAILURE_STATUS = {401, 403}
 
 
+GMAIL_SEND_ENDPOINT = (
+    "https://gmail.googleapis.com/gmail/v1/users/{user_id}/messages/send"
+)
+
+
 def build_service(creds: Any) -> Any:
+    return GmailRestService(AuthorizedSession(creds))
+
+
+class GmailRestService:
+    def __init__(self, session: AuthorizedSession) -> None:
+        self._session = session
+
+    def users(self) -> "GmailRestService":
+        return self
+
+    def messages(self) -> "GmailRestService":
+        return self
+
+    def send(self, *, userId: str, body: dict[str, str]) -> "GmailRestRequest":
+        return GmailRestRequest(session=self._session, user_id=userId, body=body)
+
+
+class GmailRestRequest:
+    def __init__(
+        self, *, session: AuthorizedSession, user_id: str, body: dict[str, str]
+    ) -> None:
+        self._session = session
+        self._user_id = user_id
+        self._body = body
+
+    def execute(self) -> dict[str, Any]:
+        response = self._session.post(
+            GMAIL_SEND_ENDPOINT.format(user_id=self._user_id),
+            json=self._body,
+            timeout=60,
+        )
+        if response.status_code >= 400:
+            raise GmailRestError(response)
+        if not response.content:
+            return {}
+        return response.json()
+
+
+class GmailRestError(Exception):
+    def __init__(self, response: Any) -> None:
+        self.response = response
+        self.status_code = response.status_code
+        self.resp = type("ResponseStatus", (), {"status": response.status_code})()
+        super().__init__(_format_response_error(response))
+
+
+def _format_response_error(response: Any) -> str:
     try:
-        from googleapiclient.discovery import build
-    except ImportError as e:
-        raise MailSendError(
-            "google-api-python-client not installed. "
-            "Run: pip install google-api-python-client google-auth-oauthlib"
-        ) from e
-    return build("gmail", "v1", credentials=creds, cache_discovery=False)
+        detail = response.json()
+    except ValueError:
+        detail = response.text
+    return f"Gmail API HTTP {response.status_code}: {detail}"
 
 
 class GmailApiMailGateway:

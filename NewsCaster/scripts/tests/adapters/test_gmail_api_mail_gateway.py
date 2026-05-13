@@ -163,3 +163,52 @@ def test_non_retryable_400_raises_mail_send_error(mock_creds):
         )
         with pytest.raises(MailSendError):
             gw.send(sender="a", to="b", subject="s", body="b")
+
+
+def test_gmail_rest_service_posts_to_send_endpoint():
+    from adapters.mail.gmail_api_mail_gateway import GmailRestService
+
+    response = MagicMock()
+    response.status_code = 200
+    response.content = b'{"id":"msg_id"}'
+    response.json.return_value = {"id": "msg_id"}
+    session = MagicMock()
+    session.post.return_value = response
+
+    result = (
+        GmailRestService(session)
+        .users()
+        .messages()
+        .send(userId="me", body={"raw": "abc"})
+        .execute()
+    )
+
+    assert result == {"id": "msg_id"}
+    session.post.assert_called_once_with(
+        "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+        json={"raw": "abc"},
+        timeout=60,
+    )
+
+
+def test_gmail_rest_service_raises_status_compatible_error():
+    from adapters.mail.gmail_api_mail_gateway import GmailRestError, GmailRestService
+
+    response = MagicMock()
+    response.status_code = 503
+    response.content = b'{"error":"busy"}'
+    response.json.return_value = {"error": "busy"}
+    session = MagicMock()
+    session.post.return_value = response
+
+    with pytest.raises(GmailRestError) as excinfo:
+        (
+            GmailRestService(session)
+            .users()
+            .messages()
+            .send(userId="me", body={"raw": "abc"})
+            .execute()
+        )
+
+    assert excinfo.value.status_code == 503
+    assert excinfo.value.resp.status == 503
