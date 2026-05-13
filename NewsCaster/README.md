@@ -39,7 +39,6 @@ Codex Cloud Environment には以下を設定してください。
 | `NEWSCASTER_OAUTH_TOKEN_JSON` | secret recommended | yes* | Gmail send scope を含む OAuth token JSON |
 | `NEWSCASTER_OAUTH_TOKEN_PATH` | env var | yes* | token file を直接使う場合 |
 | `NEWSCASTER_RSS_URL` | env var | no | 既定: `https://news.nullevi.app/rss` |
-| `NEWSCASTER_STATE_DIR` | env var | no | Cloud setup 既定: `$HOME/.newscaster/state` |
 | `NEWSCASTER_MAIL_RETRY_COUNT` | env var | no | 既定: `3` |
 
 \* `NEWSCASTER_OAUTH_TOKEN_JSON` または `NEWSCASTER_OAUTH_TOKEN_PATH` のどちらかが必要です。Codex Cloud secret は setup script のみで利用できるため、`NEWSCASTER_OAUTH_TOKEN_JSON` を secret にした場合は `scripts/codex_cloud_setup.sh` が `$HOME/.newscaster/oauth_token.json` に materialize し、agent phase 用に `NEWSCASTER_OAUTH_TOKEN_PATH` を永続化します。
@@ -59,13 +58,13 @@ python -m pytest scripts/tests/ -q
 | Command | Behavior | Exit code |
 |---|---|---|
 | `validate-config` | 必須 env vars を検証 | `0` OK, `2` config error |
-| `dry-run` | RSS 取得、前日分抽出、本文整形。送信と state 更新はしない | `0` OK |
+| `dry-run` | RSS 取得、前日分抽出、本文整形。送信はしない | `0` OK |
 | `test` | Gmail へテストメールを 1 通送信 | `0` OK, `3` auth error |
-| `run` | RSS 取得、整形、送信、state 更新 | `0` OK, `1` fetch/mail error, `2` config error, `3` auth error |
+| `run` | RSS 取得、整形、送信 | `0` OK, `1` fetch/mail error, `2` config error, `3` auth error |
 
-## State
+## Repeat Runs
 
-`run` は `state/sent_dates.json` で同一日の二重送信を防ぎます。Cloud setup では既定で `$HOME/.newscaster/state` を使います。Codex Cloud のコンテナ状態は永続ストレージではないため、長期的な完全冪等性が必要な場合は外部 state store への移行が必要です。
+NewsCaster は送信状態を保存しません。`run` を同じ対象日に複数回実行すると、その回数だけメールを送信します。本文確認だけをしたい場合は `dry-run` を使ってください。
 
 ## Troubleshooting
 

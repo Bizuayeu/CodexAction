@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.0] - 2026-05-13
+
+### Removed
+- State-based duplicate-send prevention.
+- `JsonStateStore`, `NEWSCASTER_STATE_DIR`, and `ALREADY_SENT`.
+
+### Changed
+- `run` now sends every time it is executed when the target date has RSS items.
+- `dry-run` remains the repeatable no-send path for formatting checks.
+
 ## [0.1.1] - 2026-05-12
 
 ### Changed

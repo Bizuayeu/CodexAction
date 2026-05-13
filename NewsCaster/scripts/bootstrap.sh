@@ -46,7 +46,7 @@ fi
 
 # 1. Install runtime deps from pyproject.toml.
 # Install the dependency list rather than the project itself: NewsCaster/ sits next to
-# runtime data dirs (state/, scripts/tests/) and `pip install NewsCaster/` would hit
+# non-package dirs (scripts/tests/) and `pip install NewsCaster/` would hit
 # setuptools flat-layout ambiguities. The codebase is run via
 # `python scripts/main.py …` (pyproject.toml sets pythonpath=["scripts"] for pytest).
 _nc_log "extracting runtime deps from pyproject.toml"

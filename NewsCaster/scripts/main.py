@@ -19,7 +19,6 @@ for stream in (sys.stdout, sys.stderr):
 
 from adapters.mail.gmail_api_mail_gateway import GmailApiMailGateway
 from adapters.rss.rss_xml_gateway import RssXmlGateway
-from adapters.state.json_state_store import JsonStateStore
 from domain.config import DigestConfig
 from domain.exceptions import AuthError, MailSendError, RssFetchError
 from usecases.run_daily_digest import RunDailyDigestUseCase, RunOutcome, RunResult
@@ -40,7 +39,7 @@ def _build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("run", help="Fetch RSS, filter yesterday, send email")
-    sub.add_parser("dry-run", help="Same as run but skip sending and state mark")
+    sub.add_parser("dry-run", help="Same as run but skip sending")
     sub.add_parser("test", help="Send a single test email to verify Gmail")
     sub.add_parser("validate-config", help="Check required environment variables")
     return parser
@@ -53,11 +52,9 @@ def _build_run_usecase(config: DigestConfig) -> RunDailyDigestUseCase:
         oauth_token_json=config.oauth_token_json,
         retry_count=config.retry_count,
     )
-    state = JsonStateStore(state_dir=config.state_dir)
     return RunDailyDigestUseCase(
         rss_gateway=rss,
         mail_gateway=mail,
-        state_store=state,
         sender=config.sender,
         recipient=config.recipient,
     )
@@ -102,10 +99,8 @@ def _print_outcome(outcome: RunOutcome) -> None:
         print(f"sent: {target} digest delivered ({n} items)")
     elif result == RunResult.NO_ITEMS:
         print(f"no_items: {target} had no entries (silence)")
-    elif result == RunResult.ALREADY_SENT:
-        print(f"already_sent: {target} digest was already delivered")
     elif result == RunResult.DRY_RUN:
-        print(f"[dry-run] {target} digest formatted (mail/state skipped)")
+        print(f"[dry-run] {target} digest formatted (mail skipped)")
         print("--- subject ---")
         print(outcome.digest.formatted_subject if outcome.digest else "")
         print("--- body ---")
@@ -158,7 +153,6 @@ def _cmd_validate_config() -> int:
     print(f"  sender:    {config.sender}")
     print(f"  recipient: {config.recipient}")
     print(f"  rss_url:   {config.rss_url}")
-    print(f"  state_dir: {config.state_dir}")
     return EXIT_OK
 
 

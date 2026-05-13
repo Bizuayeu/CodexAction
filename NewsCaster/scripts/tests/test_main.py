@@ -25,7 +25,6 @@ def reset_config_and_env(monkeypatch, tmp_path):
         "NEWSCASTER_RECIPIENT_EMAIL",
         "NEWSCASTER_OAUTH_TOKEN_PATH",
         "NEWSCASTER_OAUTH_TOKEN_JSON",
-        "NEWSCASTER_STATE_DIR",
     ):
         monkeypatch.delenv(key, raising=False)
     yield
@@ -43,7 +42,6 @@ def test_validate_config_returns_0_when_complete(monkeypatch, tmp_path):
     monkeypatch.setenv("NEWSCASTER_SENDER_EMAIL", "from@example.com")
     monkeypatch.setenv("NEWSCASTER_RECIPIENT_EMAIL", "to@example.com")
     monkeypatch.setenv("NEWSCASTER_OAUTH_TOKEN_PATH", str(tmp_path / "t.json"))
-    monkeypatch.setenv("NEWSCASTER_STATE_DIR", str(tmp_path / "state"))
     from main import main
 
     rc = main(["validate-config"])
@@ -61,7 +59,6 @@ def test_dry_run_does_not_send_mail(monkeypatch, tmp_path, capsys):
     monkeypatch.setenv("NEWSCASTER_SENDER_EMAIL", "from@example.com")
     monkeypatch.setenv("NEWSCASTER_RECIPIENT_EMAIL", "to@example.com")
     monkeypatch.setenv("NEWSCASTER_OAUTH_TOKEN_PATH", str(tmp_path / "t.json"))
-    monkeypatch.setenv("NEWSCASTER_STATE_DIR", str(tmp_path / "state"))
 
     item = NewsItem(
         title="TestTitle",

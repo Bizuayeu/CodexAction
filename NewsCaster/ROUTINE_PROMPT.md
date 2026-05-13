@@ -16,9 +16,8 @@ python scripts/main.py run
 
 ## Expected results
 
-- `sent:` 前日エントリがあり、メール送信と state 更新が完了
+- `sent:` 前日エントリがあり、メール送信が完了
 - `no_items:` 前日エントリが 0 件。メール送信なし。正常終了
-- `already_sent:` 対象日は送信済み。メール送信なし。正常終了
 
 ## Failure handling
 
@@ -26,4 +25,4 @@ python scripts/main.py run
 - exit `2`: 必須 env var 不足。Codex Cloud Environment を確認
 - exit `3`: OAuth token refresh / Gmail auth 失敗。token JSON と Gmail scope を確認
 
-`dry-run` は送信と state 更新を行わないため、本文確認だけをしたい場合に使ってください。
+`run` は送信状態を保存しないため、同じ対象日に複数回実行すると複数回送信します。本文確認だけをしたい場合は `dry-run` を使ってください。

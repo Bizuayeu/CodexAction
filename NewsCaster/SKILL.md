@@ -47,10 +47,9 @@ Enable Codex Cloud agent internet access when running `dry-run`, `test`, or `run
 
 | Result | Meaning |
 |---|---|
-| `SENT` | digest sent and state updated |
+| `SENT` | digest sent |
 | `NO_ITEMS` | no entries for the target date; no email |
-| `ALREADY_SENT` | target date already sent; no email |
-| `DRY_RUN` | formatted output only; no send/state update |
+| `DRY_RUN` | formatted output only; no send |
 
 ## Environment variables
 
@@ -62,7 +61,6 @@ Enable Codex Cloud agent internet access when running `dry-run`, `test`, or `run
 | `NEWSCASTER_OAUTH_TOKEN_JSON` | yes* | - |
 | `NEWSCASTER_RSS_URL` | no | `https://news.nullevi.app/rss` |
 | `NEWSCASTER_USER_AGENT` | no | Chrome-like UA |
-| `NEWSCASTER_STATE_DIR` | no | repo `state/`, or `$HOME/.newscaster/state` via Cloud setup |
 | `NEWSCASTER_MAIL_RETRY_COUNT` | no | `3` |
 
 \* Either token path or token JSON is required.
@@ -73,4 +71,4 @@ Enable Codex Cloud agent internet access when running `dry-run`, `test`, or `run
 - exit `2`: missing/invalid configuration
 - exit `3`: OAuth/Gmail authentication failed
 
-`run` uses `JsonStateStore` to prevent duplicate sends for the same target date. Codex Cloud container state is not long-term durable storage, so move state to an external store if strict long-term idempotency is required.
+`run` does not persist sent state. Running it multiple times for the same target date sends multiple emails; use `dry-run` for repeatable formatting checks.

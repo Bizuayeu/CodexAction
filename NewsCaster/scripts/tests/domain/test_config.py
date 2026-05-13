@@ -16,7 +16,6 @@ def reset_and_clean(monkeypatch, tmp_path):
         "NEWSCASTER_OAUTH_TOKEN_PATH",
         "NEWSCASTER_OAUTH_TOKEN_JSON",
         "NEWSCASTER_OAUTH_CLIENT_SECRET_PATH",
-        "NEWSCASTER_STATE_DIR",
         "NEWSCASTER_USER_AGENT",
         "NEWSCASTER_MAIL_RETRY_COUNT",
     ):
@@ -58,12 +57,6 @@ def test_rss_url_overridable(monkeypatch, tmp_path):
     monkeypatch.setenv("NEWSCASTER_RSS_URL", "https://example.com/feed")
     cfg = DigestConfig.load()
     assert cfg.rss_url == "https://example.com/feed"
-
-
-def test_state_dir_default_under_skill_dir(monkeypatch, tmp_path):
-    monkeypatch.setenv("NEWSCASTER_OAUTH_TOKEN_PATH", str(tmp_path / "t.json"))
-    cfg = DigestConfig.load()
-    assert cfg.state_dir.name == "state"
 
 
 def test_load_is_singleton(monkeypatch, tmp_path):

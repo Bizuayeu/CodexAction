@@ -19,7 +19,6 @@ Set these environment variables:
 | `NEWSCASTER_RECIPIENT_EMAIL` | env var | Digest recipient address |
 | `NEWSCASTER_OAUTH_TOKEN_JSON` | secret recommended | OAuth token JSON with Gmail send scope |
 | `NEWSCASTER_RSS_URL` | optional env var | Defaults to `https://news.nullevi.app/rss` |
-| `NEWSCASTER_STATE_DIR` | optional env var | Defaults to `$HOME/.newscaster/state` in Codex Cloud setup |
 | `NEWSCASTER_MAIL_RETRY_COUNT` | optional env var | Defaults to `3` |
 
 Codex Cloud secrets are only available to setup scripts. The setup script materializes `NEWSCASTER_OAUTH_TOKEN_JSON` to `$HOME/.newscaster/oauth_token.json` and persists `NEWSCASTER_OAUTH_TOKEN_PATH` for the agent phase.
@@ -48,4 +47,4 @@ python scripts/main.py validate-config
 python scripts/main.py dry-run
 ```
 
-`dry-run` fetches RSS and formats the digest but does not send email or update state. `run` sends the email and writes the sent date to the JSON state store.
+`dry-run` fetches RSS and formats the digest but does not send email. `run` sends the email every time it is executed for a target date with items.

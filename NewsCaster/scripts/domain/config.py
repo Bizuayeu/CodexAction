@@ -11,7 +11,6 @@ DEFAULT_USER_AGENT = (
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/124.0.0.0 Safari/537.36"
 )
-DEFAULT_STATE_DIR = Path(__file__).resolve().parents[2] / "state"
 
 
 @dataclass(frozen=True)
@@ -23,7 +22,6 @@ class DigestConfig:
     oauth_client_secret_path: Path | None
     rss_url: str
     user_agent: str
-    state_dir: Path
     retry_count: int
 
     _instance: ClassVar["DigestConfig | None"] = None
@@ -49,7 +47,6 @@ class DigestConfig:
         client_secret_raw = os.environ.get(
             "NEWSCASTER_OAUTH_CLIENT_SECRET_PATH", ""
         ).strip()
-        state_dir_raw = os.environ.get("NEWSCASTER_STATE_DIR", "").strip()
 
         cls._instance = cls(
             sender=os.environ.get("NEWSCASTER_SENDER_EMAIL", ""),
@@ -62,7 +59,6 @@ class DigestConfig:
             rss_url=os.environ.get("NEWSCASTER_RSS_URL", "").strip() or DEFAULT_RSS_URL,
             user_agent=os.environ.get("NEWSCASTER_USER_AGENT", "").strip()
             or DEFAULT_USER_AGENT,
-            state_dir=Path(state_dir_raw) if state_dir_raw else DEFAULT_STATE_DIR,
             retry_count=retry_count,
         )
         return cls._instance

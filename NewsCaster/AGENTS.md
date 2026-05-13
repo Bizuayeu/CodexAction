@@ -29,4 +29,4 @@ python scripts/main.py validate-config
 python scripts/main.py dry-run
 ```
 
-`validate-config`, `dry-run`, `test`, and `run` require the NewsCaster environment variables above. Do not commit generated state, token files, `.env`, virtualenvs, coverage output, or cache directories.
+`validate-config`, `dry-run`, `test`, and `run` require the NewsCaster environment variables above. Do not commit token files, `.env`, virtualenvs, coverage output, or cache directories.

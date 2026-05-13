@@ -8,14 +8,13 @@ from domain.date_range import DateRangeJST
 from domain.digest import DailyDigest
 from usecases.fetch_and_filter import FetchAndFilterUseCase
 from usecases.format_digest import FormatDigestUseCase
-from usecases.ports import MailGatewayPort, RssGatewayPort, StateStorePort
+from usecases.ports import MailGatewayPort, RssGatewayPort
 from usecases.send_digest_email import SendDigestEmailUseCase
 
 
 class RunResult(str, Enum):
     SENT = "sent"
     NO_ITEMS = "no_items"
-    ALREADY_SENT = "already_sent"
     DRY_RUN = "dry_run"
 
 
@@ -32,7 +31,6 @@ class RunDailyDigestUseCase:
         *,
         rss_gateway: RssGatewayPort,
         mail_gateway: MailGatewayPort,
-        state_store: StateStorePort,
         sender: str,
         recipient: str,
     ) -> None:
@@ -40,20 +38,15 @@ class RunDailyDigestUseCase:
         self._format = FormatDigestUseCase()
         self._send = SendDigestEmailUseCase(
             mail_gateway=mail_gateway,
-            state_store=state_store,
             sender=sender,
             recipient=recipient,
         )
-        self._state = state_store
 
     def execute(
         self, *, now: datetime, dry_run: bool = False
     ) -> RunOutcome:
         date_range = DateRangeJST.from_yesterday(now)
         target_date = date_range.target_date_iso()
-
-        if self._state.is_sent(target_date) and not dry_run:
-            return RunOutcome(RunResult.ALREADY_SENT, target_date)
 
         items = self._fetch_filter.execute(date_range=date_range)
         if not items:
@@ -64,6 +57,5 @@ class RunDailyDigestUseCase:
         if dry_run:
             return RunOutcome(RunResult.DRY_RUN, target_date, digest=digest)
 
-        sent = self._send.execute(digest=digest)
-        result = RunResult.SENT if sent else RunResult.ALREADY_SENT
-        return RunOutcome(result, target_date, digest=digest)
+        self._send.execute(digest=digest)
+        return RunOutcome(RunResult.SENT, target_date, digest=digest)

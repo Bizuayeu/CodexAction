@@ -25,19 +25,6 @@ class FakeMailGateway:
         self.sent.append(kwargs)
 
 
-class FakeStateStore:
-    def __init__(self, already_sent=None):
-        self.sent_dates: set[str] = set(already_sent or [])
-        self.mark_called: list[str] = []
-
-    def is_sent(self, target_date: str) -> bool:
-        return target_date in self.sent_dates
-
-    def mark_sent(self, target_date: str) -> None:
-        self.sent_dates.add(target_date)
-        self.mark_called.append(target_date)
-
-
 def _item(day: int, hour: int, title: str = "t") -> NewsItem:
     return NewsItem(
         title=title,
@@ -49,60 +36,54 @@ def _item(day: int, hour: int, title: str = "t") -> NewsItem:
     )
 
 
-def _build_uc(rss_items, *, already_sent=None):
+def _build_uc(rss_items):
     rss = FakeRssGateway(rss_items)
     mail = FakeMailGateway()
-    state = FakeStateStore(already_sent=already_sent)
     uc = RunDailyDigestUseCase(
         rss_gateway=rss,
         mail_gateway=mail,
-        state_store=state,
         sender="from@example.com",
         recipient="to@example.com",
     )
-    return uc, mail, state
+    return uc, mail
 
 
 def test_full_flow_sends_email_when_yesterday_has_items():
-    uc, mail, state = _build_uc([_item(11, 12, "yesterday")])
+    uc, mail = _build_uc([_item(11, 12, "yesterday")])
     result = uc.execute(now=datetime(2026, 5, 12, 0, 10, 0, tzinfo=JST))
     assert result.result == RunResult.SENT
     assert len(mail.sent) == 1
-    assert state.sent_dates == {"2026-05-11"}
 
 
 def test_skips_email_when_zero_items_yesterday():
-    uc, mail, state = _build_uc([_item(12, 12, "today")])
+    uc, mail = _build_uc([_item(12, 12, "today")])
     result = uc.execute(now=datetime(2026, 5, 12, 0, 10, 0, tzinfo=JST))
     assert result.result == RunResult.NO_ITEMS
     assert mail.sent == []
-    assert state.mark_called == []
 
 
-def test_skips_when_already_sent_today():
-    uc, mail, state = _build_uc(
-        [_item(11, 12, "y")], already_sent={"2026-05-11"}
-    )
-    result = uc.execute(now=datetime(2026, 5, 12, 0, 10, 0, tzinfo=JST))
-    assert result.result == RunResult.ALREADY_SENT
-    assert mail.sent == []
-    assert state.mark_called == []
+def test_sends_again_when_run_twice_for_same_target_date():
+    uc, mail = _build_uc([_item(11, 12, "y")])
+    first = uc.execute(now=datetime(2026, 5, 12, 0, 10, 0, tzinfo=JST))
+    second = uc.execute(now=datetime(2026, 5, 12, 0, 10, 0, tzinfo=JST))
+    assert first.result == RunResult.SENT
+    assert second.result == RunResult.SENT
+    assert len(mail.sent) == 2
 
 
 def test_target_date_override_via_now():
     # 2026-05-13 0:10 で実行すると 5/12 が前日
-    uc, mail, state = _build_uc([_item(12, 12, "in_range"), _item(11, 12, "out")])
+    uc, mail = _build_uc([_item(12, 12, "in_range"), _item(11, 12, "out")])
     result = uc.execute(now=datetime(2026, 5, 13, 0, 10, 0, tzinfo=JST))
     assert result.result == RunResult.SENT
-    assert state.sent_dates == {"2026-05-12"}
+    assert len(mail.sent) == 1
 
 
-def test_dry_run_skips_send_and_state_mark():
-    uc, mail, state = _build_uc([_item(11, 12, "y")])
+def test_dry_run_skips_send():
+    uc, mail = _build_uc([_item(11, 12, "y")])
     result = uc.execute(
         now=datetime(2026, 5, 12, 0, 10, 0, tzinfo=JST), dry_run=True
     )
     assert result.result == RunResult.DRY_RUN
     assert result.digest is not None
     assert mail.sent == []
-    assert state.mark_called == []

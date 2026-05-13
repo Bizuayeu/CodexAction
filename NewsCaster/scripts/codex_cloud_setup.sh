@@ -12,11 +12,11 @@ log() { echo "[newscaster-cloud-setup] $*"; }
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 project_dir="$(cd "$script_dir/.." && pwd)"
-state_root="${HOME}/.newscaster"
-env_file="${state_root}/env.sh"
+config_root="${HOME}/.newscaster"
+env_file="${config_root}/env.sh"
 
-mkdir -p "$state_root"
-chmod 700 "$state_root" 2>/dev/null || true
+mkdir -p "$config_root"
+chmod 700 "$config_root" 2>/dev/null || true
 
 write_export() {
     local key="$1"
@@ -51,7 +51,7 @@ for ca_bundle in \
 done
 
 if [ -n "${NEWSCASTER_OAUTH_TOKEN_JSON:-}" ]; then
-    token_path="${state_root}/oauth_token.json"
+    token_path="${config_root}/oauth_token.json"
     printf '%s' "$NEWSCASTER_OAUTH_TOKEN_JSON" >"$token_path"
     python -m json.tool "$token_path" >/dev/null
     chmod 600 "$token_path" 2>/dev/null || true
@@ -59,14 +59,6 @@ if [ -n "${NEWSCASTER_OAUTH_TOKEN_JSON:-}" ]; then
     log "materialized NEWSCASTER_OAUTH_TOKEN_JSON to ${token_path}"
 elif [ -n "${NEWSCASTER_OAUTH_TOKEN_PATH:-}" ]; then
     write_export "NEWSCASTER_OAUTH_TOKEN_PATH" "$NEWSCASTER_OAUTH_TOKEN_PATH"
-fi
-
-if [ -z "${NEWSCASTER_STATE_DIR:-}" ]; then
-    mkdir -p "${state_root}/state"
-    write_export "NEWSCASTER_STATE_DIR" "${state_root}/state"
-    log "NEWSCASTER_STATE_DIR=${state_root}/state"
-else
-    write_export "NEWSCASTER_STATE_DIR" "$NEWSCASTER_STATE_DIR"
 fi
 
 bashrc="${HOME}/.bashrc"
@@ -83,10 +75,8 @@ from zoneinfo import ZoneInfo
 import google.auth
 import google_auth_oauthlib
 import googleapiclient
-from adapters.state.json_state_store import JsonStateStore
 
 ZoneInfo("Asia/Tokyo")
-assert JsonStateStore is not None
 PY
 
 log "ready"
