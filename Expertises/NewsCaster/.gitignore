@@ -1,0 +1,24 @@
+# State (runtime) — skill root の state/ のみ除外
+# adapters/state/ パッケージは除外しないため先頭スラッシュで限定
+/state/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+
+# Virtual envs
+.venv/
+venv/
+
+# Editor
+.vscode/
+.idea/
+
+# Local env
+.env
