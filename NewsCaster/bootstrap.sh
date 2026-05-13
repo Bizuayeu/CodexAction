@@ -95,6 +95,8 @@ missing = [m for m in required if importlib.util.find_spec(m) is None]
 if missing:
     print("missing modules:", missing, file=sys.stderr)
     sys.exit(1)
+from zoneinfo import ZoneInfo
+ZoneInfo("Asia/Tokyo")
 PY
 
 # 4. Export HTTPLIB2_CA_CERTS so httplib2 (Gmail API transport) trusts the system

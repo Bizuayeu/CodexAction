@@ -1,95 +1,86 @@
 # NewsCaster
 
-🦐 [ナルエビちゃんニュース](https://news.nullevi.app) の前日エントリを Gmail で配信するユーザスキル。Cloud Routine で毎日 0:10 JST に自動実行。
+🦐 [ナルエビちゃんニュース](https://news.nullevi.app) の前日エントリを Gmail で配信する Python スキルです。ローカル実行と Codex Cloud 実行の両方を想定しています。
 
-## Quickstart（ローカル動作確認）
+## Local Quickstart
 
 ```powershell
-cd C:\Users\anyth\DEV\homunculus\Weave\Expertises\NewsCaster
+cd C:\Users\anyth\DEV\sandbox\Codex\NewsCaster
 
-# 依存インストール（venv 推奨）
 python -m venv .venv
 .venv\Scripts\activate
 pip install -e ".[dev]"
 
-# 環境変数設定（BBS と token.json を共有）
 $env:NEWSCASTER_SENDER_EMAIL = "<your-sender>@gmail.com"
 $env:NEWSCASTER_RECIPIENT_EMAIL = "<your-recipient>@gmail.com"
-$env:NEWSCASTER_OAUTH_TOKEN_PATH = "C:\Users\anyth\DEV\homunculus\Weave\Expertises\BlueberrySprite\token.json"
+$env:NEWSCASTER_OAUTH_TOKEN_PATH = "C:\path\to\token.json"
 
-# 設定検証
 python scripts/main.py validate-config
-
-# 整形プレビュー（送信なし）
 python scripts/main.py dry-run
-
-# テストメール（1通だけ）
 python scripts/main.py test
-
-# 実運用
 python scripts/main.py run
 ```
 
-## テスト
+## Codex Cloud
 
-```powershell
-pip install -e ".[dev]"
-python -m pytest scripts/tests/ -v
+Codex Cloud では setup phase と agent phase で secret の扱いが違うため、専用 setup script を使います。
+
+```bash
+cd NewsCaster
+bash scripts/codex_cloud_setup.sh
 ```
 
-Stage 1〜4 で計 **82 tests** が green。
+Codex Cloud Environment には以下を設定してください。
 
-## 環境変数
+| Var | Kind | Required | Notes |
+|---|---|---:|---|
+| `NEWSCASTER_SENDER_EMAIL` | env var | yes | 送信元 Gmail アドレス |
+| `NEWSCASTER_RECIPIENT_EMAIL` | env var | yes | 配信先 Gmail アドレス |
+| `NEWSCASTER_OAUTH_TOKEN_JSON` | secret recommended | yes* | Gmail send scope を含む OAuth token JSON |
+| `NEWSCASTER_OAUTH_TOKEN_PATH` | env var | yes* | token file を直接使う場合 |
+| `NEWSCASTER_RSS_URL` | env var | no | 既定: `https://news.nullevi.app/rss` |
+| `NEWSCASTER_STATE_DIR` | env var | no | Cloud setup 既定: `$HOME/.newscaster/state` |
+| `NEWSCASTER_MAIL_RETRY_COUNT` | env var | no | 既定: `3` |
 
-| Var | 必須 | 説明 |
+\* `NEWSCASTER_OAUTH_TOKEN_JSON` または `NEWSCASTER_OAUTH_TOKEN_PATH` のどちらかが必要です。Codex Cloud secret は setup script のみで利用できるため、`NEWSCASTER_OAUTH_TOKEN_JSON` を secret にした場合は `scripts/codex_cloud_setup.sh` が `$HOME/.newscaster/oauth_token.json` に materialize し、agent phase 用に `NEWSCASTER_OAUTH_TOKEN_PATH` を永続化します。
+
+実行時は RSS と Gmail API へアクセスするため、`dry-run` / `test` / `run` を Cloud task で実行する場合は Codex Cloud の agent internet access を有効にしてください。詳細は [CLOUD.md](CLOUD.md) を参照。
+
+## Commands
+
+```bash
+python scripts/main.py validate-config
+python scripts/main.py dry-run
+python scripts/main.py test
+python scripts/main.py run
+python -m pytest scripts/tests/ -q
+```
+
+| Command | Behavior | Exit code |
 |---|---|---|
-| `NEWSCASTER_SENDER_EMAIL` | ✓ | 送信元 Gmail アドレス |
-| `NEWSCASTER_RECIPIENT_EMAIL` | ✓ | 配信先 Gmail アドレス |
-| `NEWSCASTER_OAUTH_TOKEN_PATH` | ✓* | OAuth token.json パス（BBS と共有可） |
-| `NEWSCASTER_OAUTH_TOKEN_JSON` | ✓* | inline JSON（Cloud Routine env用） |
-| `NEWSCASTER_RSS_URL` | — | 既定: `https://news.nullevi.app/rss` |
-| `NEWSCASTER_USER_AGENT` | — | 既定: Chrome 124 系（Bot検知対策） |
-| `NEWSCASTER_STATE_DIR` | — | 既定: `<skill_dir>/state` |
-| `NEWSCASTER_MAIL_RETRY_COUNT` | — | 既定: `3` |
+| `validate-config` | 必須 env vars を検証 | `0` OK, `2` config error |
+| `dry-run` | RSS 取得、前日分抽出、本文整形。送信と state 更新はしない | `0` OK |
+| `test` | Gmail へテストメールを 1 通送信 | `0` OK, `3` auth error |
+| `run` | RSS 取得、整形、送信、state 更新 | `0` OK, `1` fetch/mail error, `2` config error, `3` auth error |
 
-\* PATH or JSON のいずれか必須。
+## State
 
-## Cloud Routine 登録
+`run` は `state/sent_dates.json` で同一日の二重送信を防ぎます。Cloud setup では既定で `$HOME/.newscaster/state` を使います。Codex Cloud のコンテナ状態は永続ストレージではないため、長期的な完全冪等性が必要な場合は外部 state store への移行が必要です。
 
-`/schedule` 経由で以下を登録：
-
-```
-cron: 10 0 * * * Asia/Tokyo
-prompt: ROUTINE_PROMPT.md を参照
-env: 上記環境変数を Cloud Routine の Environment に設定
-```
-
-詳細は [`ROUTINE_PROMPT.md`](ROUTINE_PROMPT.md) を参照。
-
-## トラブルシューティング
+## Troubleshooting
 
 ### `Configuration errors: NEWSCASTER_OAUTH_TOKEN_PATH or NEWSCASTER_OAUTH_TOKEN_JSON is required`
-→ env var を設定。BBS の token.json をそのまま指せる。
+
+OAuth token を env var か file path で設定してください。Codex Cloud では `NEWSCASTER_OAUTH_TOKEN_JSON` を secret にする構成を推奨します。
 
 ### RSS が 403 Forbidden
-→ `NEWSCASTER_USER_AGENT` が Bot 系UA になっていないか確認。Chrome 系UA で取れることは検証済（[`scripts/tests/adapters/fixtures/sample_rss.xml`](scripts/tests/adapters/fixtures/sample_rss.xml) は実フィードの先頭3件相当）。
+
+`NEWSCASTER_USER_AGENT` が Bot 系 UA になっていないか確認してください。既定では Chrome 系 UA を使います。
 
 ### Gmail API `403 PERMISSION_DENIED`
-→ token.json の scope に `https://www.googleapis.com/auth/gmail.send` が含まれているか確認。BBS と共有しているなら自動的に含まれる。
 
-### Cloud Routine 環境で `CERTIFICATE_VERIFY_FAILED`
-→ httplib2 が独自 CA store を使う。`HTTPLIB2_CA_CERTS=/etc/ssl/certs/ca-certificates.crt` を env 設定（コード側で `setdefault` 済み、env で override 可能）。
+token JSON の scope に `https://www.googleapis.com/auth/gmail.send` が含まれているか確認してください。
 
-### 同一日に複数回実行してもメールは1通だけ
-→ 仕様。`state/sent_dates.json` で冪等性管理。再送したいなら該当日エントリを手動削除。
+### `CERTIFICATE_VERIFY_FAILED`
 
-## 設計判断（IMPLEMENTATION_PLAN.md より抜粋）
-
-- **要約しない**: description が既に1段落の要旨。LLM再要約は「ベタにまとめる」原則（L00473）に反する
-- **token.json共有可**: BlueberrySprite と sender Gmail を共通化すれば初回OAuth省略
-- **依存最小化**: 標準 `urllib` + `xml.etree` + `google-api-python-client` + `google-auth-oauthlib` のみ
-- **冪等性**: 同日二重送信防止、0件沈黙、再実行安全
-
-## License
-
-個人スキル。配布想定なし。
+`httplib2` が独自 CA store を使うため、Linux 環境では `HTTPLIB2_CA_CERTS=/etc/ssl/certs/ca-certificates.crt` が必要になる場合があります。`scripts/codex_cloud_setup.sh` と `scripts/bootstrap.sh` は利用可能な CA bundle を自動設定します。
