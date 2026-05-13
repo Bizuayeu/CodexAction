@@ -76,6 +76,11 @@ def test_validate_returns_errors_when_missing():
     assert any("NEWSCASTER_OAUTH_TOKEN" in e for e in errors)
 
 
+def test_validate_dry_run_skips_delivery_settings():
+    cfg = DigestConfig.load()
+    assert cfg.validate(require_delivery=False) == []
+
+
 def test_validate_passes_with_token_json_only(monkeypatch):
     monkeypatch.setenv("NEWSCASTER_SENDER_EMAIL", "from@example.com")
     monkeypatch.setenv("NEWSCASTER_RECIPIENT_EMAIL", "to@example.com")

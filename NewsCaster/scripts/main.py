@@ -68,7 +68,7 @@ def _print_config_errors(errors: list[str]) -> None:
 
 def _cmd_run(*, dry_run: bool) -> int:
     config = DigestConfig.load()
-    errors = config.validate()
+    errors = config.validate(require_delivery=not dry_run)
     if errors:
         _print_config_errors(errors)
         return EXIT_CONFIG

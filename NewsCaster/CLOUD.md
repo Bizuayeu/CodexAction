@@ -21,7 +21,7 @@ Set these environment variables:
 | `NEWSCASTER_RSS_URL` | optional env var | Defaults to `https://news.nullevi.app/rss` |
 | `NEWSCASTER_MAIL_RETRY_COUNT` | optional env var | Defaults to `3` |
 
-Codex Cloud secrets are only available to setup scripts. The setup script materializes `NEWSCASTER_OAUTH_TOKEN_JSON` to `$HOME/.newscaster/oauth_token.json` and persists `NEWSCASTER_OAUTH_TOKEN_PATH` for the agent phase.
+Codex Cloud secrets are only available to setup scripts. The setup script materializes `NEWSCASTER_OAUTH_TOKEN_JSON` to `$HOME/.newscaster/oauth_token.json` and persists `NEWSCASTER_OAUTH_TOKEN_PATH` for the agent phase. Seeing `NEWSCASTER_OAUTH_TOKEN_JSON` listed under **Secrets** in the environment settings is correct; it is not expected to appear when an agent runs `env` later. If the secret was added or changed while setup caching is enabled, reset the setup cache so `scripts/codex_cloud_setup.sh` runs again and can materialize the secret.
 
 ## Internet access
 

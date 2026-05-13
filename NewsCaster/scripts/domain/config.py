@@ -74,8 +74,10 @@ class DigestConfig:
             key, _, value = line.partition("=")
             os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
 
-    def validate(self) -> list[str]:
+    def validate(self, *, require_delivery: bool = True) -> list[str]:
         errors: list[str] = []
+        if not require_delivery:
+            return errors
         if not self.sender:
             errors.append("NEWSCASTER_SENDER_EMAIL is required")
         if not self.recipient:

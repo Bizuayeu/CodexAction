@@ -68,7 +68,7 @@ Enable Codex Cloud agent internet access when running `dry-run`, `test`, or `run
 ## Failure modes
 
 - exit `1`: RSS fetch or Gmail send failed
-- exit `2`: missing/invalid configuration
+- exit `2`: missing/invalid configuration (`dry-run` does not require mail delivery settings)
 - exit `3`: OAuth/Gmail authentication failed
 
 `run` does not persist sent state. Running it multiple times for the same target date sends multiple emails; use `dry-run` for repeatable formatting checks.

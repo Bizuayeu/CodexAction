@@ -56,10 +56,6 @@ def test_run_returns_2_when_config_missing():
 
 
 def test_dry_run_does_not_send_mail(monkeypatch, tmp_path, capsys):
-    monkeypatch.setenv("NEWSCASTER_SENDER_EMAIL", "from@example.com")
-    monkeypatch.setenv("NEWSCASTER_RECIPIENT_EMAIL", "to@example.com")
-    monkeypatch.setenv("NEWSCASTER_OAUTH_TOKEN_PATH", str(tmp_path / "t.json"))
-
     item = NewsItem(
         title="TestTitle",
         link="https://news.nullevi.app/x",

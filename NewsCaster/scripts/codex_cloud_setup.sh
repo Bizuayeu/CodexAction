@@ -59,6 +59,10 @@ if [ -n "${NEWSCASTER_OAUTH_TOKEN_JSON:-}" ]; then
     log "materialized NEWSCASTER_OAUTH_TOKEN_JSON to ${token_path}"
 elif [ -n "${NEWSCASTER_OAUTH_TOKEN_PATH:-}" ]; then
     write_export "NEWSCASTER_OAUTH_TOKEN_PATH" "$NEWSCASTER_OAUTH_TOKEN_PATH"
+    log "persisted NEWSCASTER_OAUTH_TOKEN_PATH for agent phase"
+else
+    log "WARNING: no OAuth token was visible during setup"
+    log "If NEWSCASTER_OAUTH_TOKEN_JSON is configured as a secret, reset the Codex Cloud setup cache and rerun setup. Secrets are not visible in the agent phase."
 fi
 
 bashrc="${HOME}/.bashrc"
