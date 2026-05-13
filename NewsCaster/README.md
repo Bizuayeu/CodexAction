@@ -23,6 +23,8 @@ python scripts/main.py run
 
 ## Codex Cloud
 
+Codex Automations に登録する場合は、[`automation.toml`](automation.toml) の `name` / `timezone` / `rrule` / `cwd` / `prompt` をそのまま使ってください。既定の automation 名は **ナルエビちゃんニュース日次配信**、実行時刻は **毎日 00:10 JST** です。
+
 Codex Cloud では setup phase と agent phase で secret の扱いが違うため、専用 setup script を使います。
 
 ```bash

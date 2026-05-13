@@ -2,6 +2,18 @@
 
 NewsCaster can run in Codex Cloud, but it needs an explicit environment setup because it sends mail through Gmail and fetches an external RSS feed.
 
+## Codex Automation
+
+Codex Automations には [`automation.toml`](automation.toml) を登録用メモとして使ってください。
+
+- Name: `ナルエビちゃんニュース日次配信`
+- Timezone: `Asia/Tokyo`
+- Schedule: `FREQ=DAILY;BYHOUR=0;BYMINUTE=10;BYSECOND=0`（毎日 00:10 JST）
+- Working directory: `NewsCaster`
+- Prompt: `automation.toml` の `prompt`
+
+Automation 実行前に、下記の Codex Cloud Environment setup を完了してください。
+
 ## Environment setup
 
 In Codex Cloud environment settings, use:

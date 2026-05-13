@@ -1,0 +1,38 @@
+# Codex Automation definition for the NewsCaster daily digest.
+# Register this in the Codex Automations UI using the fields below.
+
+name = "ナルエビちゃんニュース日次配信"
+status = "ACTIVE"
+timezone = "Asia/Tokyo"
+rrule = "FREQ=DAILY;BYHOUR=0;BYMINUTE=10;BYSECOND=0"
+cwd = "NewsCaster"
+
+prompt = """
+ナルエビちゃんニュースの日次配信を実行してください。
+
+目的:
+- JST 前日 00:00-23:59 に公開された https://news.nullevi.app/rss の記事を抽出する。
+- RSS description は再要約せず、NewsCaster の既存フォーマットで整形する。
+- 前日エントリがある場合は Gmail で日次ダイジェストを送信する。
+- 前日エントリが 0 件の場合はメールを送らず、正常終了として扱う。
+
+実行手順:
+```bash
+cd NewsCaster
+python scripts/main.py validate-config
+python scripts/main.py run
+```
+
+期待する結果:
+- `sent:` が出たら配信完了。
+- `no_items:` が出たら対象日の記事なし。メール未送信で正常。
+
+失敗時:
+- exit 1: RSS fetch または Gmail send の失敗。stderr を確認する。
+- exit 2: 必須 env var 不足。Codex Cloud Environment を確認する。
+- exit 3: OAuth token refresh / Gmail auth 失敗。token JSON と Gmail scope を確認する。
+
+注意:
+- `run` は送信状態を保存しないため、同じ対象日に複数回実行すると複数回送信される。
+- RSS と Gmail API へアクセスするため、agent internet access が必要。
+"""
