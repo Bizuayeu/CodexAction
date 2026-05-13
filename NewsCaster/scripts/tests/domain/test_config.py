@@ -38,6 +38,28 @@ def test_load_from_env_vars(monkeypatch, tmp_path):
     assert cfg.rss_url == "https://news.nullevi.app/rss"
 
 
+def test_token_json_strips_matching_shell_quotes(monkeypatch):
+    monkeypatch.setenv(
+        "NEWSCASTER_OAUTH_TOKEN_JSON",
+        '\'{"refresh_token": "fake", "client_id": "x", "client_secret": "y"}\'',
+    )
+
+    cfg = DigestConfig.load()
+
+    assert cfg.oauth_token_json == (
+        '{"refresh_token": "fake", "client_id": "x", "client_secret": "y"}'
+    )
+
+
+def test_token_path_strips_matching_shell_quotes(monkeypatch, tmp_path):
+    token_path = tmp_path / "token.json"
+    monkeypatch.setenv("NEWSCASTER_OAUTH_TOKEN_PATH", f"'{token_path}'")
+
+    cfg = DigestConfig.load()
+
+    assert cfg.oauth_token_path == token_path
+
+
 def test_user_agent_has_default_chrome(monkeypatch, tmp_path):
     monkeypatch.setenv("NEWSCASTER_OAUTH_TOKEN_PATH", str(tmp_path / "t.json"))
     cfg = DigestConfig.load()

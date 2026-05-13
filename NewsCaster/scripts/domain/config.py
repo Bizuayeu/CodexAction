@@ -42,26 +42,37 @@ class DigestConfig:
         except ValueError:
             retry_count = 3
 
-        token_raw = os.environ.get("NEWSCASTER_OAUTH_TOKEN_PATH", "").strip()
-        token_json_raw = os.environ.get("NEWSCASTER_OAUTH_TOKEN_JSON", "").strip()
-        client_secret_raw = os.environ.get(
-            "NEWSCASTER_OAUTH_CLIENT_SECRET_PATH", ""
-        ).strip()
+        token_raw = cls._clean_env_value(
+            os.environ.get("NEWSCASTER_OAUTH_TOKEN_PATH", "")
+        )
+        token_json_raw = cls._clean_env_value(
+            os.environ.get("NEWSCASTER_OAUTH_TOKEN_JSON", "")
+        )
+        client_secret_raw = cls._clean_env_value(
+            os.environ.get("NEWSCASTER_OAUTH_CLIENT_SECRET_PATH", "")
+        )
 
         cls._instance = cls(
             sender=os.environ.get("NEWSCASTER_SENDER_EMAIL", ""),
             recipient=os.environ.get("NEWSCASTER_RECIPIENT_EMAIL", ""),
             oauth_token_path=Path(token_raw) if token_raw else None,
             oauth_token_json=token_json_raw or None,
-            oauth_client_secret_path=Path(client_secret_raw)
-            if client_secret_raw
-            else None,
+            oauth_client_secret_path=(
+                Path(client_secret_raw) if client_secret_raw else None
+            ),
             rss_url=os.environ.get("NEWSCASTER_RSS_URL", "").strip() or DEFAULT_RSS_URL,
             user_agent=os.environ.get("NEWSCASTER_USER_AGENT", "").strip()
             or DEFAULT_USER_AGENT,
             retry_count=retry_count,
         )
         return cls._instance
+
+    @staticmethod
+    def _clean_env_value(value: str) -> str:
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+            return value[1:-1]
+        return value
 
     @staticmethod
     def _load_env_file(path: Path) -> None:

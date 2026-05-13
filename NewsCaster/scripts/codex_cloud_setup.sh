@@ -52,7 +52,13 @@ done
 
 if [ -n "${NEWSCASTER_OAUTH_TOKEN_JSON:-}" ]; then
     token_path="${config_root}/oauth_token.json"
-    printf '%s' "$NEWSCASTER_OAUTH_TOKEN_JSON" >"$token_path"
+    token_json="$NEWSCASTER_OAUTH_TOKEN_JSON"
+    first_char="${token_json:0:1}"
+    last_char="${token_json: -1}"
+    if [ "${#token_json}" -ge 2 ] && [ "$first_char" = "$last_char" ] && { [ "$first_char" = "'" ] || [ "$first_char" = '"' ]; }; then
+        token_json="${token_json:1:${#token_json}-2}"
+    fi
+    printf '%s' "$token_json" >"$token_path"
     python -m json.tool "$token_path" >/dev/null
     chmod 600 "$token_path" 2>/dev/null || true
     write_export "NEWSCASTER_OAUTH_TOKEN_PATH" "$token_path"
